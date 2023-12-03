@@ -67,11 +67,13 @@ def switch_room(nickname, roomname):
         name.send('You are already in the room'.encode('utf-8'))
     elif room not in user.roomdetails:
         name.send('Switch not available, You are not part of the room'.encode('utf-8'))
+    elif roomname not in user.roomdetails:
+        name.send('Switch not available, you are not part of the room'.encode('utf-8'))
     else:
         user.thisRoom = roomname
         name.send(f'Switched to {roomname}'.encode('utf-8'))
 
-#now to exit the room
+#now to leave the room
 def leave_room(nickname):
     user = users_in_room[nickname]
     name = users[nickname]
@@ -101,7 +103,7 @@ def personalMessage(message):
         reciever.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
         sender.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
 
-#now to exit the server
+#now to quit the server
 def remove_client(nickname):
     nicknames.remove(nickname)
     client = users[nickname]
@@ -125,19 +127,19 @@ def handle(client):
             args = message.split(" ")
             name = users[args[0]]
             nick = args[0]
-            if '$help' in message:
+            if '@help' in message:
                 name.send(instructions.encode('utf-8'))
-            elif '$list' in message:
+            elif '@list' in message:
                 list_all_roomdetails(args[0])
-            elif '$join' in message:
+            elif '@join' in message:
                 join_room(args[0], ' '.join(args[2:]))
-            elif '$leave' in message:
+            elif '@leave' in message:
                 leave_room(args[0])
-            elif '$switch' in message:
+            elif '@switch' in message:
                 switch_room(args[0], args[2])
-            elif '$personal' in message:
+            elif '@personal' in message:
                 personalMessage(message)
-            elif '$quit' in message:
+            elif '@quit' in message:
                 remove_client(args[0])
                 name.send('QUIT'.encode('utf-8'))
                 name.close()

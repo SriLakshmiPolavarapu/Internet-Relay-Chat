@@ -19,13 +19,13 @@ server.listen() #now its in listening mode
 
 
 instructions = '\nList of commands:\n' \
-               '1.$list to list all the rooms\n' \
-               '2.$quit to quit\n' \
-               '3.$help to list all the commands\n' \
-               '4.$leave to leave the room \n' \
-               '5.$join roomname to join or create the room\n' \
-               '6.$switch roomname to switch room\n' \
-               '7.$personal name message to send personal message'
+               '1.@list to list all the rooms\n' \
+               '2.@quit to quit\n' \
+               '3.@help to list all the commands\n' \
+               '4.@leave to leave the room \n' \
+               '5.@join roomname to join or create the room\n' \
+               '6.@switch roomname to switch room\n' \
+               '7.@personal name message to send personal message'
 
 #now create a empty list and dict for data storage
 clients = []
