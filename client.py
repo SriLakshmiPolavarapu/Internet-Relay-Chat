@@ -12,6 +12,7 @@ client.connect(('127.0.0.1', 55555))
 
 COLOR_RESET = '\033[0m'
 COLOR_YELLOW = '\033[93m'
+COLOR_GREEN = '\033[92m'
 
 #to recieve and send message from the server
 def receive():
@@ -44,7 +45,7 @@ def parse_formatted_message(message):
     if '[personal message]' in message:
         return f"[{COLOR_YELLOW}{timestamp}] {message}{COLOR_RESET}"
     else:
-        return f"[{timestamp}] {message}"
+        return f"{COLOR_GREEN}[{timestamp}]{COLOR_RESET} {message}"
     
 receive_thread = threading.Thread(target=receive)
 receive_thread.start()

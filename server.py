@@ -6,13 +6,11 @@ class User:
         self.roomdetails = []
         self.thisRoom = ''
 
-
 class Room:
     def __init__(self, name):
         self.peoples = []
         self.nicknames = []
         self.name = name
-
 
 #now to listing the room and it's details
 def list_all_roomdetails(nickname):
@@ -21,57 +19,62 @@ def list_all_roomdetails(nickname):
     if len(roomdetails) == 0:
         name.send('No roomdetails are available to join'.encode('utf-8'))
     else:
-        reply = "List of available roomdetails: \n"
+        reply = "List of available roomdetails:\n"
         for room in roomdetails:
-            print(roomdetails[room].name)
-            reply += roomdetails[room].name
-            print(roomdetails[room].nicknames)
-
-            #if nickname not in roomdetails[room].nicknames:
-            for people in roomdetails[room].nicknames:
-                reply += people + '\n'
+            room_name = roomdetails[room].name
+            nicknames = ', '.join(roomdetails[room].nicknames)
+            reply += 'Room' + ' ' + f"{room_name} : {nicknames}\n"
         name.send(f'{reply}'.encode('utf-8'))
-
-
+        
+       
 #now to join to other rooms
 def join_room(nickname, room_name):
     name = users[nickname]
     user = users_in_room[nickname]
     if room_name not in roomdetails:
         room = Room(room_name)
+        room.created_by = nickname  # Store the creator's nickname
         roomdetails[room_name] = room
         room.peoples.append(name)
         room.nicknames.append(nickname)
 
         user.thisRoom = room_name
         user.roomdetails.append(room)
-        name.send(f'{room_name} created'.encode('utf-8'))
+        name.send(f' Room {room_name} is created'.encode('utf-8'))
+        name.send(f' Room {room_name} created by {nickname}'.encode('utf-8'))
     else:
         room = roomdetails[room_name]
         if room_name in user.roomdetails:
-            name.send('You are already in the room'.encode('utf-8'))
+            name.send('You are already in the roomroom'.encode('utf-8'))
         else:
             room.peoples.append(name)
             room.nicknames.append(nickname)
             user.thisRoom = room_name
             user.roomdetails.append(room)
-            broadcast(f'{nickname} joined the room', room_name)
-            #name.send('Joined room'.encode('utf-8'))
+            broadcast(f'{nickname} joined the room, which was created by {room.created_by}', room_name)
+            
 
 #now to switch to other room
 def switch_room(nickname, roomname):
-    user = users_in_room[nickname]
-    name = users[nickname]
-    room = roomdetails[roomname]
+    user = users_in_room.get(nickname)
+    name = users.get(nickname)
+    if user is None or name is None:
+        print("User not found.")
+        return
+    current_room = roomdetails.get(user.thisRoom)
+    target_room = roomdetails.get(roomname)
+
     if roomname == user.thisRoom:
         name.send('You are already in the room'.encode('utf-8'))
-    elif room not in user.roomdetails:
-        name.send('Switch not available, You are not part of the room'.encode('utf-8'))
-    elif roomname not in user.roomdetails:
-        name.send('Switch not available, you are not part of the room'.encode('utf-8'))
+    elif current_room is None:
+        name.send('You are not currently in any room'.encode('utf-8'))
+    elif target_room is None:
+        name.send(f'The specified room ({roomname}) does not exist'.encode('utf-8'))
     else:
         user.thisRoom = roomname
         name.send(f'Switched to {roomname}'.encode('utf-8'))
+             
+        
 
 #now to leave the room
 def leave_room(nickname):
@@ -127,19 +130,19 @@ def handle(client):
             args = message.split(" ")
             name = users[args[0]]
             nick = args[0]
-            if '@help' in message:
-                name.send(instructions.encode('utf-8'))
-            elif '@list' in message:
+            if 'help' in message:
+                name.send(instructions.encode('utf-8'))            
+            elif 'display' in message:
                 list_all_roomdetails(args[0])
-            elif '@join' in message:
+            elif 'create' in message:
                 join_room(args[0], ' '.join(args[2:]))
-            elif '@leave' in message:
+            elif 'leave' in message:
                 leave_room(args[0])
-            elif '@switch' in message:
+            elif 'switch' in message:
                 switch_room(args[0], args[2])
-            elif '@personal' in message:
+            elif 'personal' in message:
                 personalMessage(message)
-            elif '@quit' in message:
+            elif 'quit' in message:
                 remove_client(args[0])
                 name.send('QUIT'.encode('utf-8'))
                 name.close()
