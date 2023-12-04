@@ -14,7 +14,7 @@ COLOR_RESET = '\033[0m'
 COLOR_YELLOW = '\033[93m'
 COLOR_GREEN = '\033[92m'
 
-#to recieve and send message from the server
+#to recieve message from the server
 def receive():
     while True:
         try:
@@ -39,7 +39,7 @@ def write():
         except:
             sys.exit(0)
             
-#Time
+#for client to understand
 def parse_formatted_message(message):
     timestamp = datetime.now().strftime("%H:%M:%p")
     if '[personal message]' in message:

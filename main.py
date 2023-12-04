@@ -15,12 +15,12 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port)) #server is binding
 server.listen() #now its in listening mode
 
-instructions = f'{COLOR_BLUE}\nTHESE ARE THE LIST OF COMMANDS:{COLOR_RESET}\n' \
+instructions = f'{COLOR_BLUE}\nTHESE ARE THE LIST OF INSTRUCTIONS :{COLOR_RESET}\n' \
                f'1.{COLOR_PINK}display{COLOR_RESET} - to list all the available rooms\n' \
                f'2.{COLOR_PINK}quit{COLOR_RESET} - to quit\n' \
                f'3.{COLOR_PINK}help{COLOR_RESET} - to list all the available commands\n' \
                f'4.{COLOR_PINK}leave{COLOR_RESET} - to leave the room \n' \
-               f'5.{COLOR_PINK}create{COLOR_RESET} - to join or create a new room\n' \
+               f'5.{COLOR_PINK}join{COLOR_RESET} - to join or create a new room\n' \
                f'6.{COLOR_PINK}switch{COLOR_RESET} - to switch to a other room\n' \
                f'7.{COLOR_PINK}personal{COLOR_RESET} - to send personal message to specified person in the room'
 

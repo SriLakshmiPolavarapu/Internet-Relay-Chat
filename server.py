@@ -12,7 +12,7 @@ class Room:
         self.nicknames = []
         self.name = name
 
-#now to listing the room and it's details
+#Lists the available rooms with nickanmes
 def list_all_roomdetails(nickname):
     name = users[nickname]
     print(len(roomdetails))
@@ -91,20 +91,30 @@ def leave_room(nickname):
         roomdetails[roomname].nicknames.remove(nickname)
         broadcast(f'{nickname} left the room', roomname)
         name.send('You left the room'.encode('utf-8'))
+        #del users_in_room[nickname]
 
 
 #now to personally message
 def personalMessage(message):
     args = message.split(" ")
-    user = args[2]
-    sender = users[args[0]]
-    if user not in users:
-        sender.send('User not found'.encode('utf-8'))
+    sender = args[0]
+    receiver_name = args[2]
+    if sender not in users or receiver_name not in users:
+        users[sender].send('User not found'.encode('utf-8'))
+        return
+
+    sender_room = users_in_room.get(sender)
+    receiver_room = users_in_room.get(receiver_name)
+
+    if sender_room is None or receiver_room is None or sender_room.thisRoom != receiver_room.thisRoom:
+        users[sender].send(f'{receiver_name} is not in the same room'.encode('utf-8'))
     else:
-        reciever = users[user]
+        sender_client = users[sender]
+        receiver_client = users[receiver_name]
         msg = ' '.join(args[3:])
-        reciever.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
-        sender.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
+        receiver_client.send(f'[personal message] {sender}: {msg}'.encode('utf-8'))
+        sender_client.send(f'[personal message] {sender}: {msg}'.encode('utf-8'))
+
 
 #now to quit the server
 def remove_client(nickname):
@@ -134,7 +144,7 @@ def handle(client):
                 name.send(instructions.encode('utf-8'))            
             elif 'display' in message:
                 list_all_roomdetails(args[0])
-            elif 'create' in message:
+            elif 'join' in message:
                 join_room(args[0], ' '.join(args[2:]))
             elif 'leave' in message:
                 leave_room(args[0])
